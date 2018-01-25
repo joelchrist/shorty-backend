@@ -10,8 +10,6 @@ public class Shorty {
     @URL(message = "A shorty's full url should be a valid url")
     private String fullUrl;
 
-    @NotNull(message = "A shorty should have a short identifier")
-    @NotEmpty(message = "A shorty should have a short identifier")
     private String shortIdentifier;
 
     public Shorty(String fullUrl, String shortIdentifier) {
