@@ -3,7 +3,7 @@ package nl.joelchrist.shorty.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.CONFLICT)
+@ResponseStatus(value = HttpStatus.CONFLICT, reason = "A shorty with this shortIdentifier already exists")
 public class DuplicateShortyException extends RuntimeException {
     private final String shortIdentifier;
 

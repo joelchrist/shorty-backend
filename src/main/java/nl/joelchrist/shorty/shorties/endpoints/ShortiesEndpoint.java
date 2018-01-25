@@ -6,6 +6,7 @@ import nl.joelchrist.shorty.shorties.domain.Shorty;
 import nl.joelchrist.shorty.shorties.managers.ShortiesManager;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,15 +26,17 @@ public class ShortiesEndpoint {
     private ShortiesManager shortiesManager;
 
     @RequestMapping(value = "/shorties", method = RequestMethod.POST)
-    public Shorty createShorty(@Valid @URL @RequestBody String fullUrl) {
+    public ResponseEntity<Shorty> createShorty(@Valid @URL @RequestBody String fullUrl) {
         log.info(String.format("Creating shorty for full url: %s", fullUrl));
-        return shortiesManager.createShorty(fullUrl);
+        Shorty createdShorty = shortiesManager.createShorty(fullUrl);
+        return ResponseEntity.created(null).body(createdShorty);
     }
 
     @RequestMapping(value = "/shorties/custom", method = RequestMethod.POST)
-    public Shorty createShortyWithIdentifier(@Valid @RequestBody Shorty shorty) throws DuplicateShortyException {
+    public ResponseEntity<Shorty> createShortyWithIdentifier(@Valid @RequestBody Shorty shorty) throws DuplicateShortyException {
         log.info(String.format("Creating shorty for full url: %s", shorty.getFullUrl()));
-        return shortiesManager.createShorty(shorty);
+        Shorty createdShorty = shortiesManager.createShorty(shorty);
+        return ResponseEntity.created(null).body(createdShorty);
     }
 
     @RequestMapping(value = "/{shortIdentifier}", method = RequestMethod.GET)
