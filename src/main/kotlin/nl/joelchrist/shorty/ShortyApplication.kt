@@ -8,4 +8,5 @@ class ShortyApplication
 
 fun main(args: Array<String>) {
     SpringApplication.run(ShortyApplication::class.java, *args)
+
 }

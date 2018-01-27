@@ -5,6 +5,7 @@ import nl.joelchrist.shorty.shorties.managers.ShortiesManager
 import nl.joelchrist.shorty.util.getLogger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -24,10 +25,10 @@ class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager){
     }
 
     @RequestMapping(value = ["/shorties", "/shorties/custom"],  method = [(RequestMethod.POST)])
-    fun createShorty(@Valid @RequestBody shorty: Shorty) : ResponseEntity<Shorty> =
+    fun createShorty(@Validated @RequestBody shorty: Shorty) : ResponseEntity<Shorty> =
             ResponseEntity
                     .created(getUriFromCurrentRequest())
-                    .body(shorty.identifier?.let(shortiesManager::create) ?: shorty.let(shortiesManager::create))
+                    .body(shorty.takeIf { it.identifier != null }?.let(shortiesManager::create) ?: shorty.url.let(shortiesManager::create))
                     .also { log.info("Creating shorty for url: ${shorty.url}") }
 
     @RequestMapping(value = ["/{identifier}"],  method = [(RequestMethod.GET)])

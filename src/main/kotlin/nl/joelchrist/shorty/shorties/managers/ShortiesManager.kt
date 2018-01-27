@@ -13,8 +13,9 @@ class ShortiesManager(@Autowired private val shortyUtil: ShortyUtil, @Autowired 
     fun create(url: String) = Shorty(url, shortyUtil.generateShortIdentifier(5))
 
     fun create(entity: Shorty): Shorty =
-        if (entity.identifier?.let { shortiesRepository.find(it) } == null) entity.also(shortiesRepository::save)
-        else throw DuplicateShortyException(entity.identifier)
+            (entity.identifier?.let { shortiesRepository.find(it) })
+                    ?.let { throw DuplicateShortyException(entity.identifier) }
+                    ?: entity.also(shortiesRepository::save)
 
     fun find(identifier: String): Shorty = shortiesRepository.find(identifier) ?: throw EntityNotFoundException(Shorty::class, identifier)
 }
