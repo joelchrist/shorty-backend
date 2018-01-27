@@ -1,5 +1,6 @@
 buildscript {
 	ext {
+		kotlinVersion = '1.2.21'
 		springBootVersion = '1.5.9.RELEASE'
 		jongoVersion = '1.3.0'
 		commonsTextVersion = '1.2'
@@ -13,25 +14,27 @@ buildscript {
 		}
 	}
 	dependencies {
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath("gradle.plugin.com.palantir.gradle.docker:gradle-docker:${dockerVersion}")
 	}
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
+apply plugin: "kotlin"
+apply plugin: "kotlin-spring"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'com.palantir.docker'
 
 group = 'nl.joelchrist'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	compile("org.jetbrains.kotlin:kotlin-stdlib")
 	compile("org.springframework.boot:spring-boot-starter-web") {
 		exclude module: "spring-boot-starter-tomcat"
 	}
