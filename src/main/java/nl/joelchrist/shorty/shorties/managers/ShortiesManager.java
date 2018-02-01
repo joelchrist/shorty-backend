@@ -20,7 +20,10 @@ public class ShortiesManager {
     private ShortiesRepository shortiesRepository;
 
     public Shorty createShorty(String fullUrl) {
-        String shortIdentifier = shortyUtil.generateShortIdentifier();
+        String shortIdentifier;
+        do {
+            shortIdentifier = shortyUtil.generateShortIdentifier();
+        } while (shortiesRepository.findShorty(shortIdentifier).isPresent());
         Shorty shorty = new Shorty(fullUrl, shortIdentifier);
         return createShorty(shorty);
     }
