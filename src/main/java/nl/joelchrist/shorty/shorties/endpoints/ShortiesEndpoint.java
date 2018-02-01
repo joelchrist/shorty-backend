@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 @RestController
 @CrossOrigin()
 public class ShortiesEndpoint {
-    static Logger log = Logger.getLogger(ShortiesEndpoint.class.getName());
+    private static Logger log = Logger.getLogger(ShortiesEndpoint.class.getName());
 
     @Autowired
     private ShortiesManager shortiesManager;
