@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class Shorty {
     @NotNull(message = "A shorty should have a full url")
+    @NotEmpty(message = "A shorty should have a full url")
     @URL(message = "A shorty's full url should be a valid url")
     private String fullUrl;
 
