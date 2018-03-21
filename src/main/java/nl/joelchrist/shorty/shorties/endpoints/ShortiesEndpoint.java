@@ -32,16 +32,13 @@ public class ShortiesEndpoint {
     @RequestMapping(value = "/shorties", method = RequestMethod.POST)
     public ResponseEntity<Shorty> createShorty(@Valid @RequestBody Shorty shorty) {
         String fullUrl = shorty.getFullUrl();
+        Shorty createdShorty;
+        if (shorty.getShortIdentifier() != null) {
+            createdShorty = shortiesManager.createShorty(shorty);
+        } else {
+            createdShorty = shortiesManager.createShorty(fullUrl);
+        }
         log.info(String.format("Creating shorty for full url: %s", fullUrl));
-        Shorty createdShorty = shortiesManager.createShorty(fullUrl);
-        URI location = getUriFromCurrentRequest();
-        return ResponseEntity.created(location).body(createdShorty);
-    }
-
-    @RequestMapping(value = "/shorties/custom", method = RequestMethod.POST)
-    public ResponseEntity<Shorty> createShortyWithIdentifier(@Valid @RequestBody Shorty shorty) throws DuplicateShortyException {
-        log.info(String.format("Creating shorty for full url: %s", shorty.getFullUrl()));
-        Shorty createdShorty = shortiesManager.createShorty(shorty);
         URI location = getUriFromCurrentRequest();
         return ResponseEntity.created(location).body(createdShorty);
     }
