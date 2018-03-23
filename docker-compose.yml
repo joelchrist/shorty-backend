@@ -6,7 +6,7 @@ services:
   shorty:
     image: registry.joelchrist.nl/shorty
     ports:
-      - 8080:8080
+      - 8010:8080
       - 5005:5005
     links:
       - db
