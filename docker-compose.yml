@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.0'
 
 services:
   db:
@@ -10,7 +10,16 @@ services:
       - 5005:5005
     links:
       - db
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/shorty-bucket.json
     volumes:
       - ./private/shorty-bucket.json:/shorty-bucket.json
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /shorty-bucket.json
+      VIRTUAL_HOST: shorty.joelchrist.nl,www.shorty.joelchrist.nl,shortyy.tk,www.shortyy.tk
+      VIRTUAL_PORT: 80
+      LETSENCRYPT_HOST: shorty.joelchrist.nl,www.shorty.joelchrist.nl,shortyy.tk,www.shortyy.tk
+      LETSENCRYPT_EMAIL: joel@joelchrist.nl
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
