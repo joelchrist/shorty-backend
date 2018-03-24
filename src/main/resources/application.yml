@@ -3,6 +3,7 @@ spring:
     mongodb:
       host: db
       database: shorty
+      collection: shorties
       port: 27017
   mvc:
     favicon:
@@ -13,3 +14,8 @@ spring:
 shorty:
   identifier:
     length: 5
+
+google:
+  cloud:
+    bucket:
+      name: shorty-url-shortener

@@ -7,6 +7,7 @@ buildscript {
 		commonsTextVersion = '1.2'
 		mongoDriverVersion = '3.6.0'
 		dockerVersion = '0.13.0'
+		googleCloudVersion = '1.14.0'
 	}
 	repositories {
 		mavenCentral()
@@ -45,6 +46,7 @@ dependencies {
 	compile("org.jongo:jongo:${jongoVersion}")
 	compile("org.mongodb:mongo-java-driver:${mongoDriverVersion}")
 	compile("org.apache.commons:commons-text:${commonsTextVersion}")
+	compile("com.google.cloud:google-cloud-storage:${googleCloudVersion}")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
