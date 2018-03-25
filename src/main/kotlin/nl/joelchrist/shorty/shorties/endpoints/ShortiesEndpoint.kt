@@ -2,6 +2,7 @@ package nl.joelchrist.shorty.shorties.endpoints
 
 import nl.joelchrist.shorty.shorties.domain.Shorty
 import nl.joelchrist.shorty.shorties.domain.ShortyMetadata
+import nl.joelchrist.shorty.shorties.managers.FileManager
 import nl.joelchrist.shorty.shorties.managers.ShortiesManager
 import nl.joelchrist.shorty.util.getLogger
 import org.hibernate.validator.constraints.NotBlank
@@ -25,7 +26,7 @@ import javax.validation.constraints.NotNull
 
 @RestController
 @CrossOrigin
-class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager) {
+class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager, @Autowired private val fileManager: FileManager) {
     companion object {
         private val log = getLogger(ShortiesEndpoint::class)
         private fun getUriFromCurrentRequest() = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri()
@@ -35,14 +36,14 @@ class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager) 
     fun createShorty(@Validated @RequestBody shorty: Shorty): ResponseEntity<Shorty> =
             ResponseEntity
                     .created(getUriFromCurrentRequest())
-                    .body(shorty.takeIf { it.identifier != null }?.let(shortiesManager::create) ?: shorty.url.let(shortiesManager::create).let(shortiesManager::create))
+                    .body(shorty.let(shortiesManager::create))
                     .also { log.info("Creating shorty for url ${shorty.url}") }
 
     @RequestMapping(value = ["/files"], method = [(RequestMethod.POST)])
     fun createFile(@Validated @NotNull @NotBlank file: MultipartFile): ResponseEntity<ShortyMetadata> =
             ResponseEntity
                     .created(getUriFromCurrentRequest())
-                    .body(UUID.randomUUID().let { ShortyMetadata(shortiesManager.create(it, file), it.toString()) })
+                    .body(UUID.randomUUID().let { ShortyMetadata(fileManager.create(it, file), it.toString()) })
                     .also { log.info("Creating file ${file.originalFilename}") }
 
     @RequestMapping(value = ["/{identifier}"], method = [(RequestMethod.GET)])
@@ -57,7 +58,7 @@ class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager) 
                             }
                             else -> {
                                 val resource = it
-                                        .let { shortiesManager.findFile(identifier, it.metadata!!.uuid) }
+                                        .let { fileManager.find(it.metadata!!.uuid) }
                                         .also { log.info("Using file with identifier $identifier") }
 
                                 ResponseEntity
