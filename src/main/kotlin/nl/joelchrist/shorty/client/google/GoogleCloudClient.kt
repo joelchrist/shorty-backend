@@ -17,7 +17,7 @@ class GoogleCloudClient(@Autowired private val bucket: Bucket) : Client {
                 ShortyAccessType.PRIVATE -> bucket.create(name, entity, contentType, Bucket.BlobWriteOption.predefinedAcl(Storage.PredefinedAcl.PRIVATE))
             }
 
-    fun find(name: String): Blob =
+    fun find(name: String): Blob? =
             bucket.get(name)
 
     fun delete(name: String) =
