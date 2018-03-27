@@ -16,4 +16,5 @@ class ShortiesManager(@Autowired private val shortiesRepository: ShortiesReposit
                     ?: entity.also(shortiesRepository::save)
 
     fun find(identifier: String): Shorty = shortiesRepository.find(identifier) ?: throw EntityNotFoundException(Shorty::class, identifier)
+    fun all(): List<Shorty>? = shortiesRepository.findAll()
 }

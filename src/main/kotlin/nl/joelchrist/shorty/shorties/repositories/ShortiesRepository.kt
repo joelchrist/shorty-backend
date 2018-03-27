@@ -12,4 +12,5 @@ class ShortiesRepository(@Autowired private val shortiesCollection: MongoCollect
     }
 
     fun find(identifier: String) : Shorty? = shortiesCollection.findOne("{identifier: '$identifier'}").`as`(Shorty::class.java)
+    fun findAll(): List<Shorty>? = shortiesCollection.find().`as`(Shorty::class.java).toList()
 }

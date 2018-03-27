@@ -32,6 +32,10 @@ class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager, 
         private fun getUriFromCurrentRequest() = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri()
     }
 
+    @RequestMapping(value = ["/shorties"], method = [(RequestMethod.GET)])
+    fun getShorties(): ResponseEntity<List<Shorty>> =
+            ResponseEntity.ok(shortiesManager.all())
+
     @RequestMapping(value = ["/shorties"], method = [(RequestMethod.POST)])
     fun createShorty(@Validated @RequestBody shorty: Shorty): ResponseEntity<Shorty> =
             ResponseEntity
