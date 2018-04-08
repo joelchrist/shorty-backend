@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotBlank
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
@@ -33,8 +35,9 @@ class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager, 
     }
 
     @RequestMapping(value = ["/shorties"], method = [(RequestMethod.GET)])
-    fun getShorties(): ResponseEntity<List<Shorty>> =
-            ResponseEntity.ok(shortiesManager.all())
+    fun getShorties(@RequestParam(value = "owner", required = false, defaultValue = "") owner: String): ResponseEntity<List<Shorty>> =
+            ResponseEntity
+                    .ok(owner.takeUnless { it.isBlank() }?.let { shortiesManager.findByOwner(owner) } ?: shortiesManager.all()?.filter { it.owner == null })
 
     @RequestMapping(value = ["/shorties"], method = [(RequestMethod.POST)])
     fun createShorty(@Validated @RequestBody shorty: Shorty): ResponseEntity<Shorty> =
@@ -51,12 +54,14 @@ class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager, 
                     .also { log.info("Creating file ${file.originalFilename}") }
 
     @RequestMapping(value = ["/{identifier}"], method = [(RequestMethod.GET)])
-    fun useShorty(@PathVariable(value = "identifier") identifier: String, res: HttpServletResponse): ResponseEntity<Any> =
-            shortiesManager.find(identifier)
+    fun useShorty(@PathVariable(value = "identifier") identifier: String,
+                  @RequestParam(value = "owner", required = false, defaultValue = "") owner: String, response: HttpServletResponse): ResponseEntity<Any> =
+            shortiesManager.findByIdentifier(identifier)
                     .let {
+                        it.owner?.takeIf { it != owner }?.let { return ResponseEntity.status(HttpStatus.FORBIDDEN).build() }
                         when (it.metadata) {
                             null -> {
-                                res.sendRedirect(it.url)
+                                response.sendRedirect(it.url)
                                 log.info("Using file with identifier $identifier")
                                 ResponseEntity.ok().build()
                             }

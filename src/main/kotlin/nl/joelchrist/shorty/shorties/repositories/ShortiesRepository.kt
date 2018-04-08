@@ -11,6 +11,9 @@ class ShortiesRepository(@Autowired private val shortiesCollection: MongoCollect
         shortiesCollection.save(entity)
     }
 
-    fun find(identifier: String) : Shorty? = shortiesCollection.findOne("{identifier: '$identifier'}").`as`(Shorty::class.java)
+    fun findByIdentifier(identifier: String) : Shorty? = shortiesCollection.findOne("{identifier: '$identifier'}").`as`(Shorty::class.java)
+
+    fun findByOwner(owner: String) : List<Shorty>? = shortiesCollection.find("{owner: '$owner'}").`as`(Shorty::class.java).toList()
+
     fun findAll(): List<Shorty>? = shortiesCollection.find().`as`(Shorty::class.java).toList()
 }
