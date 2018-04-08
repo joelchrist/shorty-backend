@@ -20,6 +20,6 @@ class GoogleCloudClient(@Autowired private val bucket: Bucket) : Client {
     fun find(name: String): Blob? =
             bucket.get(name)
 
-    fun delete(name: String) =
+    fun delete(name: String): Boolean =
             bucket.get(name).delete()
 }

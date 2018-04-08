@@ -53,6 +53,16 @@ class ShortiesEndpoint(@Autowired private val shortiesManager: ShortiesManager, 
                     .body(UUID.randomUUID().let { ShortyMetadata(fileManager.create(it, file), it.toString()) })
                     .also { log.info("Creating file ${file.originalFilename}") }
 
+    @RequestMapping(value = ["/shorties/{identifier}"], method = [(RequestMethod.DELETE)])
+    fun deleteShorty(@PathVariable(value = "identifier") identifier: String): ResponseEntity<Any> =
+            shortiesManager.delete(identifier)
+                    .let { ResponseEntity.noContent().build() }
+
+    @RequestMapping(value = ["/files/{uuid}"], method = [(RequestMethod.DELETE)])
+    fun deleteFile(@PathVariable(value = "uuid") uuid: String): ResponseEntity<Any> =
+            fileManager.delete(uuid)
+                    .let { ResponseEntity.noContent().build() }
+
     @RequestMapping(value = ["/{identifier}"], method = [(RequestMethod.GET)])
     fun useShorty(@PathVariable(value = "identifier") identifier: String,
                   @RequestParam(value = "owner", required = false, defaultValue = "") owner: String, response: HttpServletResponse): ResponseEntity<Any> =

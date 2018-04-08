@@ -16,4 +16,7 @@ class FileManager(@Autowired private val storageClient: GoogleCloudClient) {
 
     fun find(uuid: String): Blob =
             storageClient.find(uuid) ?: throw EntityNotFoundException(ShortyMetadata::class, uuid)
+
+    fun delete(uuid: String): Boolean =
+        storageClient.delete(uuid).takeIf { it } ?: throw EntityNotFoundException(ShortyMetadata::class, uuid)
 }

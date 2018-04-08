@@ -19,4 +19,6 @@ class ShortiesManager(@Autowired private val shortiesRepository: ShortiesReposit
     fun findByOwner(owner: String): List<Shorty>? = shortiesRepository.findByOwner(owner)
 
     fun all(): List<Shorty>? = shortiesRepository.findAll()
+
+    fun delete(identifier: String): Boolean = shortiesRepository.delete(identifier).takeIf { it == true } ?: throw EntityNotFoundException(Shorty::class, identifier)
 }
