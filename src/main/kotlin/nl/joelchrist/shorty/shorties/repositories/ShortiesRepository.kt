@@ -16,4 +16,6 @@ class ShortiesRepository(@Autowired private val shortiesCollection: MongoCollect
     fun findByOwner(owner: String) : List<Shorty>? = shortiesCollection.find("{owner: '$owner'}").`as`(Shorty::class.java).toList()
 
     fun findAll(): List<Shorty>? = shortiesCollection.find().`as`(Shorty::class.java).toList()
+
+    fun delete(identifier: String): Boolean = shortiesCollection.remove("{identifier: '$identifier'}").takeUnless { it.n < 1 }?.let { true } == true
 }
